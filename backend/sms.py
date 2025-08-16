@@ -3,12 +3,16 @@ from flask import request
 import paramiko
 import jsonpath_ng.ext as jp
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 app = Flask(__name__)
 
-IP=os.getenv("UNIFI_IP")
-USER=os.getenv("UNIFI_USER")
+IP=os.getenv("UNIFI_HOST")
+USER=os.getenv("UNIFI_USERNAME") 
 PASS=os.getenv("UNIFI_PASSWORD")
-AUTH=os.getenv("SMS_AUTH")
+AUTH=os.getenv("SMS_API_KEY")
 
 def build_client():
   client = paramiko.client.SSHClient()

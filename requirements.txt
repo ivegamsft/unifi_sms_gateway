@@ -1,3 +1,0 @@
-flask
-paramiko
-jsonpath_ng

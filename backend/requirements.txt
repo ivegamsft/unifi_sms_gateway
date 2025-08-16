@@ -1,0 +1,12 @@
+# Backend API requirements
+flask
+flask-sqlalchemy
+flask-migrate
+flask-cors
+psycopg2-binary
+paramiko
+jsonpath_ng
+python-dotenv
+requests
+bcrypt
+pyjwt

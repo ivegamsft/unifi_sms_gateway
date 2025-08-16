@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: unifi_sms_postgres
+    environment:
+      POSTGRES_DB: unifi_sms_gateway
+      POSTGRES_USER: unifi_user
+      POSTGRES_PASSWORD: unifi_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - unifi_network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: unifi_sms_backend
+    ports:
+      - "8585:8585"
+    environment:
+      - DATABASE_URL=postgresql://unifi_user:unifi_password@postgres:5432/unifi_sms_gateway
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/app
+    networks:
+      - unifi_network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: unifi_sms_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - unifi_network
+
+volumes:
+  postgres_data:
+
+networks:
+  unifi_network:
+    driver: bridge
